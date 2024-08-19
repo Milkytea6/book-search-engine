@@ -28,12 +28,12 @@ const SignupForm = () => {
       event.preventDefault();
       event.stopPropagation();
     }
+    console.log(userFormData);
 
     try {
       const { data } = await addUser({
         variables: { ...userFormData }
       });
-
       if (data) {
         const { user } = data.addUser; // Extract user info from the mutation response
         const token = user.token; // Adjust based on your actual response shape
