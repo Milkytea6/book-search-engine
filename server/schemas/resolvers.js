@@ -1,5 +1,5 @@
 const { User, bookSchema } = require('../models');
-
+const { signToken, AuthenticationError } = require('../utils/auth');
 const resolvers = {
     Query: {
         users: async () => {
@@ -11,13 +11,33 @@ const resolvers = {
     },
     Mutation: {
         addUser: async (parent, { username, email, password }) => {
-            return await User.create({ username, email, password });
+            const user = User.create({ username, email, password });
+            const token = signToken(user);
+            return {
+                token,
+                user
+            }
         },
-        saveBook: async (parent, { book }, context) => {
+        login: async (parent, { email, password }) => {
+
+            const user = await User.findOne({  email: email  });
+            if (!user) {
+                throw AuthenticationError
+            }
+        
+            const correctPw = await user.isCorrectPassword(password);
+        
+            if (!correctPw) {
+                throw AuthenticationError
+            }
+            const token = signToken(user);
+            return { token, user };
+        },
+        saveBook: async (parent, { input }, context) => {
             if (context._id){
                 const updatedUser = await User.findOneAndUpdate(
                     { _id: context._id },
-                    { $addToSet: { savedBooks: book } },
+                    { $addToSet: { savedBooks: input } },
                     { new: true, runValidators: true }
                   );
                   return updatedUser;

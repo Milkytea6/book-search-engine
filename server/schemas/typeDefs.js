@@ -3,16 +3,16 @@ const typeDefs = `#graphql
     _id: ID
     username: String
     email: String
-    password: String
-    savedBooks: [String]!
+    bookCount: Int
+    savedBooks: [Book]
     }
     type Book {
-    _id: ID
+    bookId: ID
     description: String
     authors: [String]!
     image: String
     link: String
-    title: String
+    title: String!
     }
     input BookInput {
     _id: ID
@@ -22,14 +22,21 @@ const typeDefs = `#graphql
     link: String
     title: String
     }
+    type Auth{
+      token: String!
+      user: User
+    }
     type Query {
+    me: [User]
     users: [User]
     user(userId: ID!): User
-    books: [Book]
+    book(bookId: ID!): Book
   }
   type Mutation {
+    login(email: String!, password: String!): User
     addUser(username: String!, email: String!, password: String!): User
     saveBook(book: BookInput): User
+    removeBook(book: bookId): User
   }
 `
 module.exports = typeDefs;
