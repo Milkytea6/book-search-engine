@@ -36,7 +36,6 @@ const typeDefs = `#graphql
     login(email: String!, password: String!): User
     addUser(username: String!, email: String!, password: String!): User
     saveBook(book: BookInput): User
-    removeBook(book: bookId): User
   }
 `
 module.exports = typeDefs;
